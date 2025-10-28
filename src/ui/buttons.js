@@ -1,0 +1,85 @@
+// src/ui/buttons.js
+// ==============================================
+// DSRT Button System
+// ==============================================
+
+import { context } from '../core/canvas.js';
+import { drawRect, drawRoundedRect, drawText, drawImage } from '../graphics/draw.js';
+
+export let buttonDB = [];
+export let buttonsActive = true;
+
+export function resetButtons() {
+  buttonDB = [];
+}
+
+/**
+ * Creates a text button.
+ */
+export function button(
+  name, x, y, w, h,
+  font = 'bold 12pt Calibri',
+  fontColor = '#000',
+  strokeColor = '#000',
+  fillColor = '#adadad',
+  rounded = false,
+  callback = null
+) {
+  if (rounded) {
+    drawRoundedRect(x, y, w, h, 8, 1, strokeColor, fillColor);
+  } else {
+    drawRect(x, y, w, h, 1, strokeColor, fillColor);
+  }
+
+  const split = name.split('/id=');
+  const label = split[0];
+  const id = split.length > 1 ? split[1] : label;
+
+  context.textBaseline = 'middle';
+  drawText(label, x + w / 2, y + h / 2, font, fontColor, 'center');
+  context.textBaseline = 'alphabetic';
+
+  const exists = buttonDB.some(btn => btn[0] === id);
+  if (!exists) {
+    buttonDB.push([id, x, y, w, h, callback]);
+  }
+}
+
+/**
+ * Creates an image-based button.
+ */
+export function imageButton(name, x, y, w, h, src, callback = null) {
+  drawImage(src, x, y, w, h);
+
+  const split = name.split('/id=');
+  const label = split[0];
+  const id = split.length > 1 ? split[1] : label;
+
+  const exists = buttonDB.some(btn => btn[0] === id);
+  if (!exists) {
+    buttonDB.push([id, x, y, w, h, callback]);
+  }
+}
+
+/**
+ * Detects button clicks on canvas.
+ */
+export function checkButtonClick(e) {
+  if (!buttonsActive) return;
+  const id = document.getElementById('scene');
+  const xClick = e.pageX - id.offsetLeft;
+  const yClick = e.pageY - id.offsetTop;
+  let result = '';
+
+  for (let i = 0; i < buttonDB.length; i++) {
+    const b = buttonDB[i];
+    if (
+      xClick > b[1] && xClick < b[1] + b[3] &&
+      yClick > b[2] && yClick < b[2] + b[4]
+    ) {
+      result = b[0];
+      if (b[5]) b[5]();
+    }
+  }
+  return result;
+}
