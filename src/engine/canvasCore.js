@@ -172,11 +172,15 @@ export function drawArrow(x, y, p, t, scale, width, color) {
   const d = Math.min(Math.sqrt(p * p + t * t), 5);
   ctx.fillStyle = color;
   ctx.beginPath();
-  ctx.moveTo(x + scale * p - 3 * d * Math.cos(theta + 0.25 * Math.PI / 2),
-             y - scale * t + 3 * d * Math.sin(theta + 0.25 * Math.PI / 2));
+  ctx.moveTo(
+    x + scale * p - 3 * d * Math.cos(theta + 0.25 * Math.PI / 2),
+    y - scale * t + 3 * d * Math.sin(theta + 0.25 * Math.PI / 2)
+  );
   ctx.lineTo(x + scale * p, y - scale * t);
-  ctx.lineTo(x + scale * p - 3 * d * Math.cos(theta - 0.25 * Math.PI / 2),
-             y - scale * t + 3 * d * Math.sin(theta - 0.25 * Math.PI / 2));
+  ctx.lineTo(
+    x + scale * p - 3 * d * Math.cos(theta - 0.25 * Math.PI / 2),
+    y - scale * t + 3 * d * Math.sin(theta - 0.25 * Math.PI / 2)
+  );
   ctx.stroke();
   ctx.fill();
 }
@@ -184,9 +188,6 @@ export function drawArrow(x, y, p, t, scale, width, color) {
 /**
  * Draw an image to fill the entire canvas (fullscreen).
  * Automatically scales while maintaining aspect ratio.
- * 
- * @param {HTMLImageElement} img - The image to draw.
- * @param {string} [mode="cover"] - "cover" to fill entire canvas, "contain" to fit inside.
  */
 export function drawImageFull(img, mode = "cover") {
   const canvasRatio = canvas.width / canvas.height;
@@ -195,7 +196,6 @@ export function drawImageFull(img, mode = "cover") {
   let drawWidth, drawHeight, offsetX, offsetY;
 
   if (mode === "cover") {
-    // Fill entire canvas
     if (canvasRatio > imgRatio) {
       drawWidth = canvas.width;
       drawHeight = canvas.width / imgRatio;
@@ -208,7 +208,6 @@ export function drawImageFull(img, mode = "cover") {
       offsetY = 0;
     }
   } else {
-    // Contain (fit inside)
     if (canvasRatio < imgRatio) {
       drawWidth = canvas.width;
       drawHeight = canvas.width / imgRatio;
@@ -222,12 +221,13 @@ export function drawImageFull(img, mode = "cover") {
     }
   }
 
-  /**
- * Resize canvas to fill the entire window (fullscreen) while keeping pixel ratio.
- * Optionally keeps aspect ratio or stretches freely.
- * 
- * @param {boolean} [keepAspect=true] - Whether to preserve the original canvas aspect ratio.
- */
+  ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+}
+
+//===========================//
+//  Canvas Resize Utilities  //
+//===========================//
+
 export function resizeCanvasToWindow(keepAspect = true) {
   if (!canvas || !ctx) return;
 
@@ -253,34 +253,21 @@ export function resizeCanvasToWindow(keepAspect = true) {
   ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 }
 
-/**
- * Automatically handle window resizing for responsive canvas.
- * This should be called once after initCanvas().
- */
 export function enableAutoResize(keepAspect = true) {
   resizeCanvasToWindow(keepAspect);
   window.addEventListener("resize", () => resizeCanvasToWindow(keepAspect));
-}
-
-  ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 }
 
 //===========================//
 //     Color Conversions     //
 //===========================//
 
-/**
- * Convert RGB to hex color.
- */
 export function rgbToHex(r, g, b) {
   if (r > 255 || g > 255 || b > 255)
     throw new Error("Invalid RGB component value");
   return ((r << 16) | (g << 8) | b).toString(16);
 }
 
-/**
- * Convert hex color to RGBA with transparency.
- */
 export function hexToRGBA(hex, alpha) {
   let c;
   if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
@@ -292,9 +279,6 @@ export function hexToRGBA(hex, alpha) {
   throw new Error("Invalid hex color code.");
 }
 
-/**
- * Get pixel color at specific coordinates.
- */
 export function getPixel(x, y) {
   const p = ctx.getImageData(x, y, 1, 1).data;
   const hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
