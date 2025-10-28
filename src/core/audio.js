@@ -1,7 +1,7 @@
 // src/core/audio.js
 // ============================================================
 // DSRT ENGINE AUDIO MODULE
-// Handles sound effects, music, and audio control (Enhanced)
+// Handles sound effects, music, and audio control (Enhanced + Hook Support)
 // ============================================================
 
 var DSRT = DSRT || {};
@@ -11,8 +11,8 @@ DSRT.Audio = (function () {
   const sounds = {};
   let masterVolume = 1.0;
   let audioEnabled = true;
+  let onAudioStateChange = null; // <== optional event hook
 
-  // ====== Internal Check ======
   function _checkSound(name) {
     if (!sounds[name]) {
       console.warn(`[DSRT.Audio] Sound not found: ${name}`);
@@ -23,22 +23,14 @@ DSRT.Audio = (function () {
 
   // ====== Load Audio ======
   function load(name, src, { loop = false, volume = 1.0 } = {}) {
-    if (!src) {
-      console.warn(`[DSRT.Audio] Invalid audio source for: ${name}`);
-      return;
-    }
+    if (!src) return console.warn(`[DSRT.Audio] Invalid source for: ${name}`);
 
     const audio = new Audio(src);
     audio.preload = "auto";
     audio.loop = loop;
     audio.volume = volume * masterVolume;
 
-    sounds[name] = {
-      element: audio,
-      playing: false,
-      loop,
-      volume
-    };
+    sounds[name] = { element: audio, playing: false, loop, volume };
 
     audio.addEventListener("error", e => {
       console.error(`[DSRT.Audio] Failed to load '${name}':`, e);
@@ -63,18 +55,19 @@ DSRT.Audio = (function () {
     try {
       await s.element.play();
       s.playing = true;
+      _dispatchEvent("play", name);
     } catch (err) {
-      console.warn(`[DSRT.Audio] Play blocked (browser policy): ${name}`, err);
+      console.warn(`[DSRT.Audio] Play blocked: ${name}`, err);
     }
   }
 
-  // ====== Stop / Pause / Resume ======
   function stop(name) {
     const s = _checkSound(name);
     if (!s) return;
     s.element.pause();
     s.element.currentTime = 0;
     s.playing = false;
+    _dispatchEvent("stop", name);
   }
 
   function pause(name) {
@@ -82,6 +75,7 @@ DSRT.Audio = (function () {
     if (!s || !s.playing) return;
     s.element.pause();
     s.playing = false;
+    _dispatchEvent("pause", name);
   }
 
   async function resume(name) {
@@ -90,12 +84,13 @@ DSRT.Audio = (function () {
     try {
       await s.element.play();
       s.playing = true;
+      _dispatchEvent("resume", name);
     } catch (err) {
-      console.warn(`[DSRT.Audio] Resume blocked (browser policy): ${name}`, err);
+      console.warn(`[DSRT.Audio] Resume blocked: ${name}`, err);
     }
   }
 
-  // ====== Volume Control ======
+  // ====== Volume ======
   function setVolume(name, volume) {
     const s = _checkSound(name);
     if (!s) return;
@@ -105,13 +100,11 @@ DSRT.Audio = (function () {
 
   function setMasterVolume(volume) {
     masterVolume = Math.max(0, Math.min(1, volume));
-    for (const key in sounds) {
-      const s = sounds[key];
-      s.element.volume = s.volume * masterVolume;
-    }
+    for (const key in sounds)
+      sounds[key].element.volume = sounds[key].volume * masterVolume;
   }
 
-  // ====== Loop Handling ======
+  // ====== Loop / Mute ======
   function toggleLoop(name) {
     const s = _checkSound(name);
     if (!s) return;
@@ -119,7 +112,6 @@ DSRT.Audio = (function () {
     s.element.loop = s.loop;
   }
 
-  // ====== Mute Control ======
   function mute(name) {
     const s = _checkSound(name);
     if (s) s.element.muted = true;
@@ -138,19 +130,21 @@ DSRT.Audio = (function () {
     for (const key in sounds) sounds[key].element.muted = false;
   }
 
-  // ====== Audio Enable / Disable ======
+  // ====== Global Enable/Disable ======
   function enableAudio() {
     audioEnabled = true;
     unmuteAll();
+    _dispatchEvent("enable");
   }
 
   function disableAudio() {
     audioEnabled = false;
     muteAll();
     stopAll();
+    _dispatchEvent("disable");
   }
 
-  // ====== Check Status ======
+  // ====== Utils ======
   function isPlaying(name) {
     const s = _checkSound(name);
     return s ? !s.element.paused : false;
@@ -160,13 +154,23 @@ DSRT.Audio = (function () {
     for (const key in sounds) stop(key);
   }
 
-  // ====== Utility ======
   function getMasterVolume() {
     return masterVolume;
   }
 
   function getSound(name) {
-    return sounds[name] ? sounds[name].element : null;
+    return sounds[name]?.element || null;
+  }
+
+  // ====== Event System (optional hook) ======
+  function _dispatchEvent(type, name = null) {
+    if (typeof onAudioStateChange === "function") {
+      onAudioStateChange({ type, name, timestamp: performance.now() });
+    }
+  }
+
+  function onStateChange(callback) {
+    onAudioStateChange = callback;
   }
 
   // ====== Public API ======
@@ -189,7 +193,8 @@ DSRT.Audio = (function () {
     disableAudio,
     isPlaying,
     stopAll,
-    getSound
+    getSound,
+    onStateChange
   };
 
 })();
