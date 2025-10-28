@@ -1,0 +1,26 @@
+{
+  "name": "dsrt",
+  "version": "1.0.0",
+  "description": "A modular JavaScript 2D engine for interactive simulations and visual experiments.",
+  "type": "module",
+  "main": "src/dsrt.js",
+  "scripts": {
+    "start": "npx live-server"
+  },
+  "author": "dz",
+  "license": "MIT",
+  "keywords": [
+    "canvas",
+    "2d-engine",
+    "simulation",
+    "physics",
+    "ui",
+    "javascript",
+    "education"
+  ],
+  "homepage": "https://github.com/PrasetyoBayu07/DSRT",
+  "repository": {
+    "type": "git",
+    "url": "https://www.dsrt-artweb.online"
+  }
+}
