@@ -1,32 +1,21 @@
 // ==============================================
-// DSRT Button System + Hover + Click Animation + Sound
+// DSRT Button System
 // ==============================================
 
 import { context } from '../core/canvas.js';
 import { drawRect, drawRoundedRect, drawText, drawImage } from '../graphics/draw.js';
+import { playClickSound, playHoverSound } from '../audio/sound.js';
 
 export let buttonDB = [];
 export let buttonsActive = true;
-let hoveredButton = null;
-let pressedButton = null;
-let pressScale = 1.0;
+export let hoveredButton = null;
 
-// Load audio
-const clickAudio = new Audio('./audio/audio-click.mp3');
-clickAudio.volume = 0.6;
-
-const hoverAudio = new Audio('./audio/audio-hover.mp3');
-hoverAudio.volume = 0.4;
-
-// Reset button database
 export function resetButtons() {
   buttonDB = [];
-  hoveredButton = null;
-  pressedButton = null;
 }
 
 /**
- * Create text button
+ * Creates a text button.
  */
 export function button(
   name, x, y, w, h,
@@ -41,59 +30,64 @@ export function button(
   const label = split[0];
   const id = split.length > 1 ? split[1] : label;
 
-  // Hover & Press animation
   const isHovered = hoveredButton === id;
-  const isPressed = pressedButton === id;
-  const hoverColor = isHovered ? '#dcdcdc' : fillColor;
-  const scale = isPressed ? 0.9 : 1.0;
-
-  const offsetX = x + (w * (1 - scale)) / 2;
-  const offsetY = y + (h * (1 - scale)) / 2;
-  const newW = w * scale;
-  const newH = h * scale;
+  const hoverColor = isHovered ? '#00c2ff' : fillColor;
 
   if (rounded) {
-    drawRoundedRect(offsetX, offsetY, newW, newH, 8, 1, strokeColor, hoverColor);
+    drawRoundedRect(x, y, w, h, 8, 1, strokeColor, hoverColor);
   } else {
-    drawRect(offsetX, offsetY, newW, newH, 1, strokeColor, hoverColor);
+    drawRect(x, y, w, h, 1, strokeColor, hoverColor);
   }
 
   context.textBaseline = 'middle';
-  drawText(label, offsetX + newW / 2, offsetY + newH / 2, font, fontColor, 'center');
+  drawText(label, x + w / 2, y + h / 2, font, fontColor, 'center');
   context.textBaseline = 'alphabetic';
 
   const exists = buttonDB.some(btn => btn[0] === id);
-  if (!exists) {
-    buttonDB.push([id, x, y, w, h, callback]);
-  }
+  if (!exists) buttonDB.push([id, x, y, w, h, callback]);
 }
 
 /**
- * Create image button
+ * Creates an image-based button.
  */
 export function imageButton(name, x, y, w, h, src, callback = null) {
+  drawImage(src, x, y, w, h);
+
   const split = name.split('/id=');
   const label = split[0];
   const id = split.length > 1 ? split[1] : label;
-  const isHovered = hoveredButton === id;
-  const isPressed = pressedButton === id;
-  const scale = isPressed ? 0.9 : 1.0;
-
-  const offsetX = x + (w * (1 - scale)) / 2;
-  const offsetY = y + (h * (1 - scale)) / 2;
-  const newW = w * scale;
-  const newH = h * scale;
-
-  drawImage(src, offsetX, offsetY, newW, newH);
 
   const exists = buttonDB.some(btn => btn[0] === id);
-  if (!exists) {
-    buttonDB.push([id, x, y, w, h, callback]);
+  if (!exists) buttonDB.push([id, x, y, w, h, callback]);
+}
+
+/**
+ * Detects button hover on canvas.
+ */
+export function checkButtonHover(e) {
+  const id = document.getElementById('scene');
+  const xHover = e.pageX - id.offsetLeft;
+  const yHover = e.pageY - id.offsetTop;
+  let found = null;
+
+  for (let b of buttonDB) {
+    if (
+      xHover > b[1] && xHover < b[1] + b[3] &&
+      yHover > b[2] && yHover < b[2] + b[4]
+    ) {
+      found = b[0];
+      break;
+    }
+  }
+
+  if (found !== hoveredButton) {
+    hoveredButton = found;
+    if (found) playHoverSound();
   }
 }
 
 /**
- * Handle button click
+ * Detects button clicks on canvas.
  */
 export function checkButtonClick(e) {
   if (!buttonsActive) return;
@@ -102,54 +96,15 @@ export function checkButtonClick(e) {
   const yClick = e.pageY - id.offsetTop;
   let result = '';
 
-  for (let i = 0; i < buttonDB.length; i++) {
-    const b = buttonDB[i];
+  for (let b of buttonDB) {
     if (
       xClick > b[1] && xClick < b[1] + b[3] &&
       yClick > b[2] && yClick < b[2] + b[4]
     ) {
-      pressedButton = b[0];
-      setTimeout(() => { pressedButton = null; }, 150); // reset press after animation
-
-      if (clickAudio) {
-        clickAudio.currentTime = 0;
-        clickAudio.play().catch(() => {});
-      }
-
       result = b[0];
+      playClickSound();
       if (b[5]) b[5]();
     }
   }
-
   return result;
-}
-
-/**
- * Handle hover state
- */
-export function checkButtonHover(e) {
-  if (!buttonsActive) return;
-  const id = document.getElementById('scene');
-  const xMove = e.pageX - id.offsetLeft;
-  const yMove = e.pageY - id.offsetTop;
-  let foundHover = null;
-
-  for (let i = 0; i < buttonDB.length; i++) {
-    const b = buttonDB[i];
-    if (
-      xMove > b[1] && xMove < b[1] + b[3] &&
-      yMove > b[2] && yMove < b[2] + b[4]
-    ) {
-      foundHover = b[0];
-      break;
-    }
-  }
-
-  if (foundHover !== hoveredButton) {
-    hoveredButton = foundHover;
-    if (hoveredButton && hoverAudio) {
-      hoverAudio.currentTime = 0;
-      hoverAudio.play().catch(() => {});
-    }
-  }
 }
