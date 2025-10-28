@@ -20,7 +20,7 @@ It provides a fast, lightweight way to create visual simulations, UI components,
 
 ## 📂 Project Structure
 
-dsrt/ │ ├── index.html               # Main entry demo ├── src/ │   ├── core/                # Canvas, utils, boolean, flow │   ├── ui/                  # Buttons, sliders, inputs, drag │   ├── graphics/            # Draw, text, chart │   ├── physics/             # Particles, mechanics │   ├── lab/                 # Beaker, thermometer, burner │   ├── dsrt.js              # Integration layer │   └── legacy.js            # Original DSRT code (unmodified) │ ├── demo/                    # Example use cases ├── assets/                  # Placeholder images │   └── images/ ├── package.json ├── README.md ├── .gitignore └── LICENSE
+dsrt/ │ ├── index.html               # Main entry demo ├── src/ │   ├── core/                # Canvas, utils, boolean, flow │   ├── ui/                  # Buttons, sliders, inputs, drag │   ├── graphics/            # Draw, text, chart │   ├── physics/             # Particles, mechanics │   ├── lab/                 # Beaker, thermometer, burner │   ├── dsrt.js              # Integration layer │   └── legacy.js            # Original DSRT code (unmodified) │ ├── demo/                    # Example use cases ├── assets/                  # images │   └── images/ ├── package.json ├── README.md ├── .gitignore └── LICENSE
 
 ---
 
