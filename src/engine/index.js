@@ -23,6 +23,7 @@ import * as Physics from "./canvasPhysics.js";
 import * as Effects from "./canvasEffects.js";
 import * as Objects from "./canvasObjects.js";
 import * as Loader from "./canvasLoader.js";
+import * as Style from "./canvasStyle.js"; // ⬅️ Tambahan baru untuk preset visual
 
 //===========================//
 //       Combined Export     //
@@ -46,6 +47,9 @@ export const CanvasEngine = {
 
   // Loader
   ...Loader,
+
+  // Style Presets (e.g., LuxuryDark, NeonArcade, etc.)
+  ...Style,
 };
 
 //===========================//
