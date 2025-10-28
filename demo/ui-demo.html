@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DSRT UI Demo</title>
+  <style>
+    canvas { border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h2>UI Demo</h2>
+  <canvas id="scene" width="600" height="400"></canvas>
+  <script type="module">
+    import DSRT from '../src/dsrt.js';
+    const { Canvas, UI } = DSRT;
+
+    Canvas.initCanvas('scene', '#fafafa');
+
+    function drawUI() {
+      Canvas.clearScreen('#fafafa');
+      UI.Buttons.button("Click Me", 50, 50, 100, 40, 'bold 12pt Calibri', '#000', '#000', '#ddd', true, () => alert("Button clicked!"));
+      UI.Sliders.slider({ type: 'H', label: 'Speed', x: 50, y: 150, width: 300, min: 0, max: 100, value: 50, decimals: 0 });
+    }
+
+    drawUI();
+    document.getElementById('scene').addEventListener('click', UI.Buttons.checkButtonClick);
+  </script>
+</body>
+</html>
