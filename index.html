@@ -121,6 +121,22 @@
 
   <!-- Core Script -->
   <script type="module" src="./src/dsrt.js"></script>
+  <script type="module">
+  import { initCanvas } from './src/core/canvas.js';
+  import { button, checkButtonClick, checkButtonHover } from './src/ui/buttons.js';
+
+  // inisialisasi canvas utama
+  initCanvas('scene', '#000');
+
+  const canvas = document.getElementById('scene');
+  canvas.addEventListener('click', checkButtonClick);
+  canvas.addEventListener('mousemove', checkButtonHover);
+
+  // render tombol
+  button('Start/id=startBtn', 320, 220, 160, 50, 'bold 14pt Arial', '#fff', '#0ff', '#111', true, () => {
+    alert('Simulation Started!');
+  });
+  </script>
 
   <!-- Service Worker (PWA) -->
   <script>
