@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSRT — Dynamic Simulation & Rendering Toolkit</title>
+
+  <!-- SEO & Metadata -->
+  <meta name="description" content="DSRT — A modular JavaScript 2D engine for interactive simulations, UI systems, and physics experiments using HTML5 Canvas.">
+  <meta name="theme-color" content="#111111">
+  <link rel="icon" href="./assets/images/favicon.png">
+
+  <!-- Open Graph (social preview) -->
+  <meta property="og:title" content="DSRT — Dynamic Simulation & Rendering Toolkit">
+  <meta property="og:description" content="A modular JavaScript 2D engine for creating interactive simulations, UI systems, and physics experiments using HTML5 Canvas and ES6 modules.">
+  <meta property="og:image" content="https://prastyobayu07.github.io/DSRT/assets/images/og-preview.png">
+  <meta property="og:url" content="https://prastyobayu07.github.io/DSRT/">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Manifest (PWA) -->
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- Styles -->
+  <style>
+    body {
+      font-family: "Inter", system-ui, sans-serif;
+      margin: 0;
+      background: #000;
+      color: #fff;
+      text-align: center;
+    }
+
+    header {
+      padding: 3em 1em 2em;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 0.3em;
+      letter-spacing: 0.5px;
+    }
+
+    p.tagline {
+      max-width: 720px;
+      margin: 0.5em auto 1.5em;
+      font-size: 1.1em;
+      line-height: 1.6;
+      color: #ccc;
+    }
+
+    canvas {
+      border: 1px solid #222;
+      background: #050505;
+      display: block;
+      margin: 2em auto;
+      border-radius: 10px;
+    }
+
+    footer {
+      color: #777;
+      font-size: 0.9em;
+      margin-top: 3em;
+      padding-bottom: 2em;
+    }
+
+    footer a {
+      color: #66ccff;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .buttons {
+      margin-top: 2em;
+    }
+
+    .buttons a {
+      background: #111;
+      border: 1px solid #333;
+      color: #66ccff;
+      padding: 0.8em 1.6em;
+      border-radius: 8px;
+      text-decoration: none;
+      margin: 0.4em;
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+
+    .buttons a:hover {
+      background: #222;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>DSRT — Dynamic Simulation & Rendering Toolkit</h1>
+    <p class="tagline">
+      DSRT is a modular JavaScript 2D engine built on HTML5 Canvas and modern ES6 modules. 
+      It powers interactive simulations, UI systems, and physics experiments — fast, lightweight, and completely self-contained.
+    </p>
+
+    <div class="buttons">
+      <a href="./docs/">📘 Documentation</a>
+      <a href="./docs/api/">🔍 API Reference</a>
+      <a href="./demo/ui-demo.html">🧩 UI Demo</a>
+      <a href="./demo/flow-demo.html">⚙️ Flow Demo</a>
+    </div>
+  </header>
+
+  <canvas id="scene" width="800" height="500"></canvas>
+
+  <footer>
+    <p>© 2025 DSRT Framework — MIT License |
+      <a href="https://github.com/PrasetyoBayu07/DSRT">GitHub Repo</a>
+    </p>
+  </footer>
+
+  <!-- Core Script -->
+  <script type="module" src="./src/dsrt.js"></script>
+
+  <!-- Service Worker (PWA) -->
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("DSRT service worker registered"))
+      .catch((err) => console.error("Service worker failed:", err));
+  }
+  </script>
+</body>
+</html>
