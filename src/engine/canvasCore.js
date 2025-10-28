@@ -181,6 +181,50 @@ export function drawArrow(x, y, p, t, scale, width, color) {
   ctx.fill();
 }
 
+/**
+ * Draw an image to fill the entire canvas (fullscreen).
+ * Automatically scales while maintaining aspect ratio.
+ * 
+ * @param {HTMLImageElement} img - The image to draw.
+ * @param {string} [mode="cover"] - "cover" to fill entire canvas, "contain" to fit inside.
+ */
+export function drawImageFull(img, mode = "cover") {
+  const canvasRatio = canvas.width / canvas.height;
+  const imgRatio = img.width / img.height;
+
+  let drawWidth, drawHeight, offsetX, offsetY;
+
+  if (mode === "cover") {
+    // Fill entire canvas
+    if (canvasRatio > imgRatio) {
+      drawWidth = canvas.width;
+      drawHeight = canvas.width / imgRatio;
+      offsetX = 0;
+      offsetY = (canvas.height - drawHeight) / 2;
+    } else {
+      drawHeight = canvas.height;
+      drawWidth = canvas.height * imgRatio;
+      offsetX = (canvas.width - drawWidth) / 2;
+      offsetY = 0;
+    }
+  } else {
+    // Contain (fit inside)
+    if (canvasRatio < imgRatio) {
+      drawWidth = canvas.width;
+      drawHeight = canvas.width / imgRatio;
+      offsetX = 0;
+      offsetY = (canvas.height - drawHeight) / 2;
+    } else {
+      drawHeight = canvas.height;
+      drawWidth = canvas.height * imgRatio;
+      offsetX = (canvas.width - drawWidth) / 2;
+      offsetY = 0;
+    }
+  }
+
+  ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+}
+
 //===========================//
 //     Color Conversions     //
 //===========================//
