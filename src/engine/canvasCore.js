@@ -224,6 +224,18 @@ export function drawImageFull(img, mode = "cover") {
   ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 }
 
+/**
+ * Fill the canvas with a repeating pattern image.
+ * Ideal for seamless textures like leather, fabric, or tiles.
+ */
+export function drawPattern(img, offsetX = 0, offsetY = 0) {
+  const pattern = ctx.createPattern(img, "repeat");
+  ctx.save();
+  ctx.translate(offsetX, offsetY);
+  ctx.fillStyle = pattern;
+  ctx.fillRect(-offsetX, -offsetY, canvas.width, canvas.height);
+  ctx.restore();
+}
 //===========================//
 //  Canvas Resize Utilities  //
 //===========================//
