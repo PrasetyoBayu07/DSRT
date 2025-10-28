@@ -116,7 +116,7 @@ Author: Dz
 ---
 
 ### 🧠 Why this version hits harder
-- Looks consistent with professional JS frameworks (Pixi.js, Three.js, p5.js).  
+- Looks consistent with professional JS 
 - Clean code fences make the tree readable.  
 - The intro line under the badges gives your project immediate identity.  
 - Demos and links make it feel “alive” — not a static repo.
