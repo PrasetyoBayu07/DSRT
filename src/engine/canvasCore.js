@@ -222,6 +222,46 @@ export function drawImageFull(img, mode = "cover") {
     }
   }
 
+  /**
+ * Resize canvas to fill the entire window (fullscreen) while keeping pixel ratio.
+ * Optionally keeps aspect ratio or stretches freely.
+ * 
+ * @param {boolean} [keepAspect=true] - Whether to preserve the original canvas aspect ratio.
+ */
+export function resizeCanvasToWindow(keepAspect = true) {
+  if (!canvas || !ctx) return;
+
+  const aspect = canvas.width / canvas.height;
+  const pixelRatio = window.devicePixelRatio || 1;
+  let newWidth = window.innerWidth;
+  let newHeight = window.innerHeight;
+
+  if (keepAspect) {
+    const windowRatio = newWidth / newHeight;
+    if (windowRatio > aspect) {
+      newWidth = newHeight * aspect;
+    } else {
+      newHeight = newWidth / aspect;
+    }
+  }
+
+  canvas.style.width = `${newWidth}px`;
+  canvas.style.height = `${newHeight}px`;
+  canvas.width = newWidth * pixelRatio;
+  canvas.height = newHeight * pixelRatio;
+
+  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+}
+
+/**
+ * Automatically handle window resizing for responsive canvas.
+ * This should be called once after initCanvas().
+ */
+export function enableAutoResize(keepAspect = true) {
+  resizeCanvasToWindow(keepAspect);
+  window.addEventListener("resize", () => resizeCanvasToWindow(keepAspect));
+}
+
   ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 }
 
