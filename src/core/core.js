@@ -1,8 +1,7 @@
 // src/core/core.js
-
 // ============================================================
 // DSRT ENGINE CORE MODULE
-// Core rendering and drawing utilities
+// Core rendering and drawing utilities (Enhanced Version)
 // ============================================================
 
 var DSRT = DSRT || {};
@@ -12,9 +11,15 @@ DSRT.Core = (function () {
   let canvas, ctx;
   let width = 1200, height = 600;
   let bgColor = "#ffffff";
+  let dpr = window.devicePixelRatio || 1;
 
-  // Initialize canvas
-  function initCanvas(id = "scene", size = "1200x600") {
+  // ====== Internal check ======
+  function _checkContext() {
+    if (!ctx) throw new Error("DSRT.Core: Canvas not initialized. Call DSRT.Core.initCanvas() first.");
+  }
+
+  // ====== Initialize canvas ======
+  function initCanvas(id = "scene", size = "1200x600", retina = true) {
     const parts = size.split("x");
     width = parseInt(parts[0]);
     height = parseInt(parts[1]);
@@ -24,19 +29,50 @@ DSRT.Core = (function () {
       canvas.id = id;
       document.body.appendChild(canvas);
     }
-    canvas.width = width;
-    canvas.height = height;
-    ctx = canvas.getContext("2d");
+
+    // Retina / HiDPI support
+    if (retina) {
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + "px";
+      canvas.style.height = height + "px";
+      ctx = canvas.getContext("2d");
+      ctx.scale(dpr, dpr);
+    } else {
+      canvas.width = width;
+      canvas.height = height;
+      ctx = canvas.getContext("2d");
+    }
   }
 
-  // Clear the screen
+  // ====== Resize Canvas ======
+  function resizeCanvas(newWidth, newHeight, retina = true) {
+    _checkContext();
+    width = newWidth;
+    height = newHeight;
+    if (retina) {
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + "px";
+      canvas.style.height = height + "px";
+      ctx.scale(dpr, dpr);
+    } else {
+      canvas.width = width;
+      canvas.height = height;
+    }
+  }
+
+  // ====== Clear Screen ======
   function clearScreen(color = bgColor) {
+    _checkContext();
     ctx.fillStyle = color;
     ctx.fillRect(0, 0, width, height);
   }
 
-  // Draw a line
+  // ====== Drawing Primitives ======
   function line(x1, y1, x2, y2, stroke = 2, color = "#000") {
+    _checkContext();
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
@@ -45,8 +81,8 @@ DSRT.Core = (function () {
     ctx.stroke();
   }
 
-  // Draw a rectangle
   function rect(x, y, w, h, stroke = 1, border = "#000", fill = "#fff") {
+    _checkContext();
     ctx.beginPath();
     ctx.rect(x, y, w, h);
     ctx.lineWidth = stroke;
@@ -56,8 +92,8 @@ DSRT.Core = (function () {
     ctx.stroke();
   }
 
-  // Draw a rounded rectangle
   function rectRounded(x, y, w, h, radius = 10, stroke = 1, border = "#000", fill = "#fff") {
+    _checkContext();
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + w - radius, y);
@@ -76,8 +112,8 @@ DSRT.Core = (function () {
     ctx.stroke();
   }
 
-  // Draw a circle
   function circle(x, y, r, stroke = 1, border = "#000", fill = "#fff") {
+    _checkContext();
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.closePath();
@@ -88,8 +124,8 @@ DSRT.Core = (function () {
     ctx.stroke();
   }
 
-  // Draw an ellipse
   function ellipse(x, y, rx, ry, stroke = 1, border = "#000", fill = "#fff") {
+    _checkContext();
     ctx.beginPath();
     ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
     ctx.closePath();
@@ -100,8 +136,9 @@ DSRT.Core = (function () {
     ctx.stroke();
   }
 
-  // Draw text
+  // ====== Text & Image ======
   function text(str, x, y, font = "16pt Calibri", color = "#000", align = "center") {
+    _checkContext();
     ctx.font = font;
     ctx.fillStyle = color;
     ctx.textAlign = align;
@@ -109,8 +146,8 @@ DSRT.Core = (function () {
     ctx.fillText(str, x, y);
   }
 
-  // Draw an image
   function image(img, x, y, w, h, alpha = 1) {
+    _checkContext();
     if (!img) return;
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -119,8 +156,8 @@ DSRT.Core = (function () {
     ctx.restore();
   }
 
-  // Draw a full background image
   function imageFull(img, alpha = 1) {
+    _checkContext();
     if (!img) return;
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -128,8 +165,8 @@ DSRT.Core = (function () {
     ctx.restore();
   }
 
-  // Draw an arrow
   function arrow(x1, y1, x2, y2, width = 2, color = "#000") {
+    _checkContext();
     const headLength = 10;
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -147,8 +184,8 @@ DSRT.Core = (function () {
     ctx.stroke();
   }
 
-  // Draw rotated image
   function imageRotated(img, x, y, w, h, angle) {
+    _checkContext();
     if (!img) return;
     ctx.save();
     ctx.translate(x, y);
@@ -157,19 +194,23 @@ DSRT.Core = (function () {
     ctx.restore();
   }
 
-  // Set background color
+  // ====== Utility ======
   function setBackgroundColor(color) {
     bgColor = color;
   }
 
-  // Get canvas context
   function getContext() {
     return ctx;
   }
 
-  // Expose public methods
+  function getCanvas() {
+    return canvas;
+  }
+
+  // ====== Public API ======
   return {
     initCanvas,
+    resizeCanvas,
     clearScreen,
     line,
     rect,
@@ -182,7 +223,8 @@ DSRT.Core = (function () {
     arrow,
     imageRotated,
     setBackgroundColor,
-    getContext
+    getContext,
+    getCanvas
   };
 
 })();
