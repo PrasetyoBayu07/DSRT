@@ -1,0 +1,32 @@
+# ======================================================================
+# DSRT Robots Configuration
+# ======================================================================
+# Author: dz
+# Project: DSRT (Dynamic Simulation & Rendering Toolkit)
+# Version: 1.0
+# Date: 2025
+#
+# Purpose:
+#   Control how web crawlers interact with this site or documentation.
+#   Allow public indexing of demo pages and documentation,
+#   while blocking build artifacts and source directories.
+# ======================================================================
+
+User-agent: *
+# Allow core documentation and demos
+Allow: /$
+Allow: /index.html
+Allow: /demo/
+Allow: /docs/
+
+# Disallow internal source and private folders
+Disallow: /src/
+Disallow: /assets/
+Disallow: /node_modules/
+Disallow: /tests/
+
+# Sitemap (optional: generate later with build tools)
+Sitemap: https://your-domain-or-github-pages-url/sitemap.xml
+
+# End of robots.txt
+# ======================================================================
