@@ -1,30 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Getting Started — DSRT</title>
-  <link rel="stylesheet" href="./assets/style.css">
+  <link rel="stylesheet" href="./assets/style-docs.css" />
+  <style>
+    header {
+      background: #111;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    nav a {
+      color: #ff0055;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      color: #ddd;
+      font-family: "Inter", sans-serif;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #d1d1d1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: monospace;
+    }
+    #live-preview {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .playground-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      background: #ff0055;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 0.2s ease;
+    }
+    .playground-btn:hover {
+      background: #ff3388;
+    }
+  </style>
 </head>
+
 <body>
   <header>
-    <h1>Getting Started with DSRT</h1>
+    <h1>🚀 Getting Started with DSRT</h1>
     <nav>
-      <a href="./index.html">Docs Home</a>
-      <a href="../demo/ui-demo.html">Demo</a>
+      <a href="./index.html">Docs</a>
+      <a href="./playground.html">Playground</a>
+      <a href="https://github.com/PrasetyoBayu07/DSRT" target="_blank">GitHub</a>
     </nav>
   </header>
+
   <main>
     <h2>Installation</h2>
-    <pre><code>git clone https://github.com/PrasetyoBayu07/DSRT.git</code></pre>
+    <pre><code>git clone https://github.com/PrasetyoBayu07/DSRT.git
+cd DSRT
+npm install</code></pre>
 
-    <h2>Running Locally</h2>
-    <pre><code>npm install
-npm start</code></pre>
+    <h2>Run Locally</h2>
+    <pre><code>npm start</code></pre>
 
     <h2>Importing DSRT</h2>
     <pre><code>import { DSRT } from './src/dsrt.js';</code></pre>
 
-    <p>Now you can create scenes, UI components, and simulations directly on the canvas.</p>
+    <p>
+      Once imported, you can instantly access modules like <code>DSRT.Canvas</code>,
+      <code>DSRT.Graphics</code>, and <code>DSRT.UI</code> for interactive experiments.
+    </p>
+
+    <h2>Quick Preview</h2>
+    <p>This example draws simple text using the DSRT Canvas API:</p>
+
+    <div id="live-preview"></div>
+    <a class="playground-btn" href="./playground.html" target="_blank">▶ Open in Playground</a>
   </main>
+
+  <script type="module">
+    import { loadPreview } from "./assets/preview.js";
+    loadPreview("examples/basic/canvas-demo.js");
+  </script>
 </body>
 </html>
