@@ -6,7 +6,88 @@
   <title>DSRT Documentation — Dynamic Simulation & Rendering Toolkit</title>
   <meta name="description" content="Official documentation for DSRT, a modular JavaScript 2D engine for simulations, UI systems, and physics experiments.">
   <link rel="stylesheet" href="./assets/style.css" />
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      background: #f8f9fb;
+      color: #222;
+    }
+    header {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      background: linear-gradient(90deg, #222, #444);
+      color: white;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      margin: 0;
+    }
+    header p {
+      color: #bbb;
+      margin-top: .3rem;
+      font-size: 1rem;
+    }
+    nav a {
+      margin: 0 10px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity .3s;
+    }
+    nav a:hover {
+      opacity: 0.7;
+    }
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h2 {
+      border-left: 4px solid #444;
+      padding-left: .5rem;
+      margin-top: 2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      padding: 1rem;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+    canvas {
+      width: 100%;
+      border-radius: 8px;
+    }
+    footer {
+      text-align: center;
+      font-size: .9rem;
+      padding: 1.5rem 0;
+      color: #666;
+      border-top: 1px solid #ddd;
+      margin-top: 3rem;
+    }
+    footer a {
+      color: #444;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
+
 <body>
   <header>
     <h1>DSRT Documentation</h1>
@@ -14,7 +95,8 @@
     <nav>
       <a href="./getting-started.html">Getting Started</a>
       <a href="./api/core.html">API Reference</a>
-      <a href="../index.html">Back to Demo</a>
+      <a href="../index.html">Demo</a>
+      <a href="https://github.com/PrasetyoBayu07/DSRT">GitHub</a>
     </nav>
   </header>
 
@@ -23,24 +105,70 @@
       <h2>Overview</h2>
       <p>
         DSRT is a modular 2D simulation engine built with HTML5 Canvas and ES6 modules.
-        This documentation explains its core structure, available modules, and API reference.
+        This documentation covers its structure, available components, and APIs.
       </p>
     </section>
 
     <section>
       <h2>Core Concepts</h2>
       <ul>
-        <li><b>Core:</b> Canvas, Boolean, and Flow systems</li>
-        <li><b>UI:</b> Buttons, sliders, input fields, and drag zones</li>
-        <li><b>Graphics:</b> Drawing utilities, charts, and text rendering</li>
-        <li><b>Physics:</b> Particles, forces, and mechanical systems</li>
-        <li><b>Lab:</b> Experimental components like beaker, burner, thermometer</li>
+        <li><b>Core:</b> Canvas, Boolean, Flow systems</li>
+        <li><b>UI:</b> Buttons, sliders, inputs, drag zones</li>
+        <li><b>Graphics:</b> Drawing utilities & text rendering</li>
+        <li><b>Physics:</b> Particles, forces, and mechanical simulation</li>
+        <li><b>Lab:</b> Experimental elements like beaker, burner, thermometer</li>
       </ul>
+    </section>
+
+    <section>
+      <h2>Live Examples</h2>
+      <div class="grid" id="example-grid">
+        <!-- Live previews injected here -->
+      </div>
     </section>
   </main>
 
   <footer>
-    <p>© 2025 DSRT Framework — MIT Licensed | <a href="https://github.com/PrasetyoBayu07/DSRT">GitHub Repo</a></p>
+    <p>© 2025 DSRT Framework — MIT Licensed |
+      <a href="https://github.com/PrasetyoBayu07/DSRT">GitHub</a></p>
   </footer>
+
+  <script type="module">
+    const examples = [
+      { title: "Basic Canvas Demo", file: "examples/basic/canvas-demo.js" },
+      { title: "Shape Drawing", file: "examples/graphics/shapes-demo.js" },
+      { title: "Particle System", file: "examples/physics/particles-demo.js" },
+      { title: "UI Buttons", file: "examples/ui/button-demo.js" },
+      { title: "Wave Text", file: "examples/text/wave-text.js" }
+    ];
+
+    const grid = document.getElementById("example-grid");
+
+    examples.forEach(ex => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <h3>${ex.title}</h3>
+        <canvas width="280" height="180"></canvas>
+        <p style="font-size:13px;color:#666;">${ex.file}</p>
+      `;
+      grid.appendChild(card);
+
+      // Load module dynamically
+      const canvas = card.querySelector("canvas");
+      const ctx = canvas.getContext("2d");
+
+      import(`https://raw.githubusercontent.com/PrasetyoBayu07/DSRT/main/docs/${ex.file}`)
+        .then(mod => {
+          if (typeof mod.start === "function") mod.start(ctx);
+          else if (typeof mod.draw === "function") mod.draw(ctx);
+        })
+        .catch(() => {
+          ctx.fillStyle = "#f33";
+          ctx.font = "14px monospace";
+          ctx.fillText("⚠️ Load error", 10, 20);
+        });
+    });
+  </script>
 </body>
 </html>
