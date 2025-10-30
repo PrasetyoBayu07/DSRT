@@ -26,7 +26,7 @@
   "homepage": "https://github.com/PrasetyoBayu07/DSRT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PrasetyoBayu07/DSRT.git"
+    "url": "git+https://github.com/PrasetyoBayu07/DSRT.git"
   },
   "bugs": {
     "url": "https://github.com/PrasetyoBayu07/DSRT/issues"
@@ -37,8 +37,13 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "eslint": "^9.38.0",
+    "live-server": "^1.2.0",
     "rollup": "^4.12.0",
     "rollup-plugin-terser": "^7.0.2",
-    "live-server": "^1.2.2"
+    "vite": "^7.1.12"
+  },
+  "directories": {
+    "doc": "docs"
   }
 }
