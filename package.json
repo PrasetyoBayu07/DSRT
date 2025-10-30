@@ -1,5 +1,5 @@
 {
-  "name": "dsrt",
+  "name": "dsrt-engine",
   "version": "1.0.0",
   "description": "A modular JavaScript 2D engine for interactive simulations and visual experiments.",
   "type": "module",
@@ -7,8 +7,8 @@
   "module": "src/dsrt.js",
   "scripts": {
     "start": "npx live-server demo",
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "build": "vite build",
+    "dev": "vite"
   },
   "author": "dz",
   "license": "MIT",
@@ -39,6 +39,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "eslint": "^9.38.0",
     "live-server": "^1.2.0",
+    "prettier": "^3.6.2",
     "rollup": "^4.12.0",
     "rollup-plugin-terser": "^7.0.2",
     "vite": "^7.1.12"
